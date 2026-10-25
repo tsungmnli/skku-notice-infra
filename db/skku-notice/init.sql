@@ -20,11 +20,11 @@ SELECT (:'app_password' IN ('', 'CHANGE-ME')) AS bad_password \gset
 \endif
 
 CREATE ROLE skku_app LOGIN PASSWORD :'app_password';
-CREATE DATABASE skku OWNER skku_app ENCODING 'UTF8';
+CREATE DATABASE skkunoti OWNER skku_app ENCODING 'UTF8';
 
 -- Keep other roles (and PUBLIC) out of this database.
-REVOKE ALL ON DATABASE skku FROM PUBLIC;
-GRANT CONNECT ON DATABASE skku TO skku_app;
+REVOKE ALL ON DATABASE skkunoti FROM PUBLIC;
+GRANT CONNECT ON DATABASE skkunoti TO skku_app;
 
 -- Optional but recommended: reject runaway queries from the API.
 ALTER ROLE skku_app SET statement_timeout = '15s';

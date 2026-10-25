@@ -19,7 +19,7 @@ psql -h <홈서버IP> -U postgres -f init.sql
 체크리스트
 
 1. 위 명령으로 DB/역할 생성.
-2. Vault `kv/skku-notice` 에 `DATABASE_URL=postgresql://skku_app:<.env의 비밀번호>@<홈서버IP>:5432/skku` 저장.
+2. Vault `kv/skku-notice` 에 `DATABASE_URL=postgresql://skku_app:<.env의 비밀번호>@<홈서버IP>:5432/skkunoti` 저장.
 3. 방화벽/`pg_hba.conf`: 5432는 클러스터 노드 IP에서만 허용 (인터넷 전체 개방 금지).
 4. 백업: `pg_dump -Fc skku` 를 정기 실행하도록 설정 (스키마는 마이그레이션으로 복원 가능하지만 크롤링 데이터는 아닙니다).
 5. 클러스터에서 접속 확인: `kubectl run dbtest --image=postgres:17 --restart=Never --command -- pg_isready -h <홈서버IP> -p 5432`
