@@ -19,7 +19,8 @@ spec:
           imagePullPolicy: Always
           name: api
           ports:
-            - containerPort: 8000
+            - name: http
+              containerPort: 8000
           envFrom:
             - configMapRef:
                 name: api-config
