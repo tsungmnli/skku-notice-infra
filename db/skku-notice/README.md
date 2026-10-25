@@ -11,17 +11,17 @@ cp .env.example .env
 # .env 를 열어 SKKU_APP_PASSWORD 를 무작위 값으로 채웁니다.  (생성: openssl rand -hex 24)
 
 set -a; . ./.env; set +a           # .env 를 환경변수로 불러오기
-psql -h <홈서버IP> -U postgres -f init.sql
+docker exec -i -e SKKU_APP_PASSWORD tsungmn-postgres psql -U app -d postgres -f - < init.sql
 ```
 
-`psql` 은 15 버전 이상이어야 합니다(`psql --version`). 비밀번호가 없거나 `CHANGE-ME` 그대로면 스크립트가 아무것도 만들지 않고 멈춥니다.
+컨테이너 안의 psql(17)을 쓰므로 호스트에 psql을 설치할 필요가 없습니다(`\getenv` 는 psql 15 이상 필요). 홈서버 공용 Postgres(`tsungmn-postgres`)는 `tsungmn-infra` 저장소의 `db/postgres/` 에서 관리합니다. 비밀번호가 없거나 `CHANGE-ME` 그대로면 스크립트가 아무것도 만들지 않고 멈춥니다.
 
 체크리스트
 
 1. 위 명령으로 DB/역할 생성.
 2. Vault `kv/skku-notice` 에 `DATABASE_URL=postgresql://skku_app:<.env의 비밀번호>@<홈서버IP>:5432/skkunoti` 저장.
 3. 방화벽/`pg_hba.conf`: 5432는 클러스터 노드 IP에서만 허용 (인터넷 전체 개방 금지).
-4. 백업: `pg_dump -Fc skku` 를 정기 실행하도록 설정 (스키마는 마이그레이션으로 복원 가능하지만 크롤링 데이터는 아닙니다).
+4. 백업: `tsungmn-infra/db/postgres/backup.sh` 가 `skkunoti` 를 포함한 모든 DB를 덤프합니다. cron 등록은 그 저장소의 `db/postgres/README.md` 참고 (스키마는 마이그레이션으로 복원 가능하지만 크롤링 데이터는 아닙니다).
 5. 클러스터에서 접속 확인: `kubectl run dbtest --image=postgres:17 --restart=Never --command -- pg_isready -h <홈서버IP> -p 5432`
 
 스키마(테이블)는 여기서 만들지 않습니다. API 배포 때 Sync 훅 Job(wave 0)이 `python -m app.migrate` 로 만듭니다.

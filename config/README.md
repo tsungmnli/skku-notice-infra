@@ -55,6 +55,6 @@ Application의 Auto-Sync가 꺼져 있으면 태그 커밋 뒤 Argo CD에서 직
 - 마이그레이션이 PreSync가 아니라 **Sync 훅(wave 0)** 인 이유: PreSync는 Secret보다도 먼저 돌아서 첫 배포 때 `DATABASE_URL` 없이 실패합니다.
 - 모든 컨테이너는 non-root, 읽기 전용 파일시스템입니다. 시작 때 "Read-only file system" 오류가 나면 해당 컨테이너의 `readOnlyRootFilesystem` 을 `false` 로 바꾸세요.
 - api·web Ingress 는 같은 호스트와 같은 Secret(`gitops-tls`)을 가리킵니다. 두 앱이 **같은 네임스페이스**에 있어야 인증서 하나를 같이 씁니다(네임스페이스가 다르면 인증서가 두 번 발급됩니다).
-- 인증서 발급기는 `tsungmn-config` 저장소의 `ClusterIssuer letsencrypt-tsungmn` 입니다(travel-planner와 공유). 이 서비스를 배포하기 전에 그 저장소가 먼저 배포되어 있어야 합니다.
+- 인증서 발급기는 `tsungmn-infra` 저장소의 `ClusterIssuer letsencrypt-tsungmn` 입니다(travel-planner와 공유). 이 서비스를 배포하기 전에 그 저장소가 먼저 배포되어 있어야 합니다.
 - ConfigMap(`overlays/api/config.yaml`) 값을 바꿔도 파드는 저절로 재시작되지 않습니다. 바꾼 뒤 `kubectl -n skku-notice rollout restart deploy/api-deployment` 를 하세요.
 - 크롤러 CronJob의 `timeZone` 은 Kubernetes 1.27 이상이 필요합니다.
