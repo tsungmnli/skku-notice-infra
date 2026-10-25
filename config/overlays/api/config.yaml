@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+data:
+  APP_ENV: "prod"
+  PUBLIC_URL: "https://skkunoti.tsungmn.com"
+  CORS_ORIGINS: "https://skkunoti.tsungmn.com"
+  DOCS_ENABLED: "false"
+  CRAWL_MAX_PAGES: "3"
+  CRAWL_DELAY_SECONDS: "1.0"

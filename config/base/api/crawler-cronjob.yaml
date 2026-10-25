@@ -1,0 +1,51 @@
+# Crawls the school board. Same image as the API, different command.
+# Safe to re-run (upsert by article_no), so retries and overlaps cannot corrupt data.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: skku-notice-crawler
+  labels:
+    app.kubernetes.io/name: skku-notice-crawler
+    app.kubernetes.io/part-of: skku-notice
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  schedule: "*/30 7-23 * * *"   # every 30 min, 07:00-23:30 KST
+  timeZone: Asia/Seoul          # needs Kubernetes 1.27+
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: skku-notice-crawler
+            app.kubernetes.io/part-of: skku-notice
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: crawler
+              image: tsungmn/skku-notice-api
+              command: ["python", "-m", "app.crawl"]
+              envFrom:
+                - configMapRef:
+                    name: api-config
+                - secretRef:
+                    name: api-secret
+              resources:
+                requests: {cpu: 50m, memory: 96Mi}
+                limits: {memory: 256Mi}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]

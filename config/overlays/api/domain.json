@@ -1,0 +1,12 @@
+[
+  {
+    "op": "replace",
+    "path": "/spec/rules/0/host",
+    "value": "skkunoti.tsungmn.com"
+  },
+  {
+    "op": "replace",
+    "path": "/spec/tls/0/hosts/0",
+    "value": "skkunoti.tsungmn.com"
+  }
+]

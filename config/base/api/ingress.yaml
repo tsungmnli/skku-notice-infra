@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-tsungmn"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+spec:
+  tls:
+    - hosts:
+        - sth.skkunoti.tsungmn.com
+      secretName: gitops-tls
+  rules:
+    - host: sth.skkunoti.tsungmn.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: api-service
+                port:
+                  number: 80
+            path: /api
+            pathType: Prefix

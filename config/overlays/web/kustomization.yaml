@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: skku-notice-prod
+resources:
+  - ../../base/web
+
+patches:
+  - path: domain.json
+    target:
+      kind: Ingress
+      name: web-ingress
+
+images:
+  - name: tsungmn/skku-notice-web
+    newTag: placeholder
