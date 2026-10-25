@@ -10,14 +10,16 @@
 | `skku-notice-crawler` CronJob | `python -m app.crawl`, 30분마다 (07:00~23:30 KST) | 1 |
 
 새 버전이 나가는 방법: API repo `main`에 push → Actions가 이미지를 빌드해 Docker Hub에 올리고 → 이 repo의 `config/overlays/api/kustomization.yaml` 의 `newTag` 를 커밋 → Argo CD가 감지해 마이그레이션 → 롤아웃.
+웹도 같은 방식입니다: web repo `main`에 push → 이미지 빌드 → 이 repo의 `config/overlays/web/kustomization.yaml` 의 `newTag` 커밋.
+Application의 Auto-Sync가 꺼져 있으면 태그 커밋 뒤 Argo CD에서 직접 SYNC 를 눌러야 반영됩니다.
 
 ## 처음 한 번만 (순서대로)
 
 1. **DB**: `db/skku-notice/README.md` 대로 DB/역할을 만들고 Vault `kv/skku-notice` 에 `DATABASE_URL` 저장.
 2. **값 확인**: 아래 "바꿀 때 같이 볼 곳".
-3. **API repo Secrets**: `DOCKER_PASSWORD`(Docker Hub), `CONFIG_REPO_TOKEN` = fine-grained PAT (resource owner `tsungmn`, `skku-notice-infra` repo만, Contents: Read and write).
+3. **API repo와 web repo 양쪽의 Secrets**: `DOCKER_PASSWORD`(Docker Hub), `CONFIG_REPO_TOKEN` = fine-grained PAT (resource owner `tsungmnli`(GitHub 계정), `skku-notice-infra` repo만, Contents: Read and write).
 4. **이 repo(`skku-notice-infra`)를 push.**
-5. **API repo `main`에 push** 해서 첫 이미지를 만듭니다. (이 전에 Application을 만들면 `newTag: placeholder` 라서 ImagePullBackOff가 납니다.)
+5. **API repo와 web repo `main`에 각각 push** 해서 첫 이미지를 만듭니다. (이 전에 Application을 만들면 api는 `newTag: placeholder`, web은 `newTag: ""`(태그 없음 = latest) 라서 ImagePullBackOff가 납니다. 이미지는 커밋 해시 태그로만 올라가며 `latest` 는 없습니다.)
 6. **Argo CD에서 Application 만들기** (UI의 NEW APP). api와 web 각각:
 
    | 항목 | skku-notice-api | skku-notice-web |
