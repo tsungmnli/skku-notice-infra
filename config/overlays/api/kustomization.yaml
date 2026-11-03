@@ -2,17 +2,17 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: skku-notice-prod
 resources:
-  - config.yaml
-  - secret.yaml
-  - ../../base/api
+- config.yaml
+- secret.yaml
+- ../../base/api
 
 patches:
-  - path: domain.json
-    target:
-      kind: Ingress
-      name: api-ingress
+- path: domain.json
+  target:
+    kind: Ingress
+    name: api-ingress
 
 images:
-  - name: tsungmn/skku-notice-api
-    newName: tsungmn/skku-notice-api
-    newTag: d400a7d1b58de31a828ab81a46a12fbdb5411d2e
+- name: tsungmn/skku-notice-api
+  newName: tsungmn/skku-notice-api
+  newTag: 8348fc4451531954a733ad2b17cc3a242ff4d69f
