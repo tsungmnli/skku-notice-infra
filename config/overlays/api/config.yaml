@@ -9,5 +9,13 @@ data:
   PUBLIC_URL: "https://skkunoti.tsungmn.com"
   CORS_ORIGINS: "https://skkunoti.tsungmn.com"
   DOCS_ENABLED: "false"
+  # Outgoing mail (Resend SMTP). The password is in api-secret.
+  SMTP_HOST: "smtp.resend.com"
+  SMTP_PORT: "587"
+  SMTP_USER: "resend"
+  # Proxies between the client and the app: Cloudflare + ingress-nginx = 2. Rate limits key on
+  # the client IP found by counting this many entries from the right of X-Forwarded-For.
+  # Check README "배포 전 확인" before changing; a wrong value breaks per-IP limits.
+  TRUSTED_PROXY_HOPS: "2"
   CRAWL_MAX_PAGES: "3"
   CRAWL_DELAY_SECONDS: "1.0"
