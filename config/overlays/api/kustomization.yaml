@@ -15,4 +15,4 @@ patches:
 images:
 - name: tsungmn/skku-notice-api
   newName: tsungmn/skku-notice-api
-  newTag: 1e494e31cc8a0b75512ce774079563d319bcb2bf
+  newTag: 2d3e9cb8894f68021cff355e34753e26ca7b3fac
