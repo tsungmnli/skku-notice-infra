@@ -5,7 +5,7 @@
 | 리소스 | 하는 일 | 순서(sync-wave) |
 | --- | --- | --- |
 | Secret, ConfigMap | `DATABASE_URL`(Vault), 비밀이 아닌 설정 | -1 |
-| `skku-notice-migrate` Job | `python -m app.migrate`. 끝나야 다음으로 진행 | 0 |
+| `skku-notice-migrate` Job | `python -m app.migrate` 뒤에 `python -m app.crawl --sync-sources`(boards.json → 학과·게시판 표). 끝나야 다음으로 진행 | 0 |
 | `skku-notice-api` Deployment + Service + Ingress | API. 프로브 `/api/healthz`, `/api/readyz` | 1 |
 | `skku-notice-crawler` CronJob | `python -m app.crawl`, 30분마다 (07:00~23:30 KST) | 1 |
 

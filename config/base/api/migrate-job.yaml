@@ -1,4 +1,9 @@
-# Schema migration. Runs to completion BEFORE the Deployment rolls out.
+# Schema migration + board registry sync. Runs to completion BEFORE the Deployment rolls out.
+#
+# After the migration it copies app/crawler/boards.json (baked into the image) into the
+# departments/sources tables (`python -m app.crawl --sync-sources`: upsert, never deletes, safe to
+# repeat). Without it /departments stays empty until someone runs the sync by hand. A bad
+# boards.json fails this Job, so the Sync stops at wave 0 like a failed migration.
 #
 # Why a Sync hook (wave 0) and not PreSync: PreSync hooks run before every normal resource,
 # including the Secret (overlays/api/secret.yaml), so on the very first sync the Job would start without
@@ -32,7 +37,10 @@ spec:
       containers:
         - name: migrate
           image: tsungmn/skku-notice-api
-          command: ["python", "-m", "app.migrate"]
+          command:
+            - sh
+            - -c
+            - python -m app.migrate && python -m app.crawl --sync-sources
           envFrom:
             - configMapRef:
                 name: api-config
