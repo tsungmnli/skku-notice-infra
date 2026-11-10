@@ -12,4 +12,4 @@ patches:
 
 images:
   - name: tsungmn/skku-notice-web
-    newTag: "728ef35aaba36274b6061d69927b417dfaadb8db"
+    newTag: "171e077bf9ebb865bbc7cf0e65dbcbb0577fccd6"
